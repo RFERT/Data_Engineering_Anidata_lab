@@ -13,9 +13,10 @@ name: CI
 # Évènements qui déclenchent le workflow
 on:
   push:
-    branches: [dev]
+    branches: [main, dev]
   pull_request:
-    branches: [dev]
+    branches: [main, dev]
+  workflow_dispatch: {}
 
 # Empêche que deux exécutions tournent en parallèle sur la même branche :
 # le nouveau push annule l'ancien run (économise du temps de runner).
@@ -45,7 +46,7 @@ jobs:
         run: pip install ruff
 
       - name: Vérification du style
-        run: ruff check anidata_scraper/ tests/
+        run: ruff check airflow/ tests/
 
   # ---------------------------------------------------------------------------
   # JOB 2 : TESTS
@@ -78,7 +79,7 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Exécution des tests avec couverture
-        run: pytest --cov=anidata_scraper --cov-report=term-missing --cov-report=xml
+        run: pytest tests -q --cov=airflow/scripts --cov-report=term-missing --cov-report=xml
 
       - name: Upload du rapport de couverture (artefact)
         # Uniquement sur Python 3.10 pour éviter les doublons.
