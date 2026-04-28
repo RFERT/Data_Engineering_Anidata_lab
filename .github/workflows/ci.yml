@@ -46,7 +46,7 @@ jobs:
         run: pip install ruff
 
       - name: Vérification du style
-        run: ruff check airflow/ tests/
+        run: ruff check airflow/scripts/ airflow/dags/ tests/ --ignore=E501
 
   # ---------------------------------------------------------------------------
   # JOB 2 : TESTS

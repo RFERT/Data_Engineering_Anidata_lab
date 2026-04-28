@@ -4,3 +4,4 @@ pytest
 pytest-cov
 elasticsearch
 ruff
+apache-airflow
