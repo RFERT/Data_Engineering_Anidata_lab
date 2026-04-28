@@ -1,0 +1,6 @@
+pandas
+numpy
+pytest
+pytest-cov
+elasticsearch
+ruff

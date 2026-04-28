@@ -1,6 +1,8 @@
 .env
 docker-compose.yml
 *.code-workspace
+__pycache__/
+PROJECT_TODO.md
 # Données (trop volumineuses pour Git)
 data/*.csv
 data/*.zip
