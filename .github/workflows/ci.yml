@@ -13,9 +13,9 @@ name: CI
 # Évènements qui déclenchent le workflow
 on:
   push:
-    branches: [main, dev]
+    branches: [master]
   pull_request:
-    branches: [main, dev]
+    branches: [master]
   workflow_dispatch: {}
 
 # Empêche que deux exécutions tournent en parallèle sur la même branche :
