@@ -1,0 +1,447 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "title": "Vue d'ensemble",
+      "url": "/d/anidata-overview",
+      "type": "link",
+      "icon": "external link",
+      "tooltip": "Retour au dashboard principal"
+    }
+  ],
+  "panels": [
+    {
+      "datasource": { "type": "datasource", "uid": "-- Mixed --" },
+      "gridPos": { "h": 3, "w": 24, "x": 0, "y": 0 },
+      "id": 1,
+      "options": {
+        "content": "# AniData Lab — Détection d'anomalies\n##### Résultats du DAG `04_anomaly_detector` &nbsp;·&nbsp; Drop ratio &nbsp;·&nbsp; Outliers &nbsp;·&nbsp; Engagement",
+        "mode": "markdown"
+      },
+      "title": "",
+      "transparent": true,
+      "type": "text"
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#3b82f6", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#3b82f6", "value": null }
+            ]
+          },
+          "unit": "percentunit",
+          "decimals": 2
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 0, "y": 3 },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["mean"] },
+        "textMode": "auto"
+      },
+      "title": "Drop ratio moyen",
+      "description": "Taux d'abandon moyen global — Dropped / (Completed + Dropped)",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [{ "type": "avg", "id": "1", "field": "drop_ratio" }],
+          "query": "*",
+          "refId": "A",
+          "bucketAggs": [{ "type": "date_histogram", "id": "2", "field": "indexed_at", "settings": { "interval": "1d", "min_doc_count": "0" } }]
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#f59e0b", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#f59e0b", "value": null }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 6, "y": 3 },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["sum"] },
+        "textMode": "auto"
+      },
+      "title": "Animes suspects",
+      "description": "Score > 7 et drop ratio > 30% — bien notés mais fortement abandonnés",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [{ "type": "count", "id": "1" }],
+          "query": "Score:>7 AND drop_ratio:>0.3",
+          "refId": "A",
+          "bucketAggs": [{ "type": "date_histogram", "id": "2", "field": "indexed_at", "settings": { "interval": "1d", "min_doc_count": "0" } }]
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#ef4444", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#ef4444", "value": null }
+            ]
+          },
+          "unit": "short",
+          "decimals": 0
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 12, "y": 3 },
+      "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["sum"] },
+        "textMode": "auto"
+      },
+      "title": "Outliers détectés",
+      "description": "Score < 4 ou drop_ratio > 0.6 avec plus de 500 membres",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [{ "type": "count", "id": "1" }],
+          "query": "is_outlier:true",
+          "refId": "A",
+          "bucketAggs": [{ "type": "date_histogram", "id": "2", "field": "indexed_at", "settings": { "interval": "1d", "min_doc_count": "0" } }]
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#64748b", "mode": "fixed" },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#64748b", "value": null }
+            ]
+          },
+          "unit": "percentunit",
+          "decimals": 3
+        }
+      },
+      "gridPos": { "h": 5, "w": 6, "x": 18, "y": 3 },
+      "id": 5,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": { "calcs": ["mean"] },
+        "textMode": "auto"
+      },
+      "title": "Engagement ratio moyen",
+      "description": "Favorites / Members — taux d'engagement moyen global",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [{ "type": "avg", "id": "1", "field": "engagement_ratio" }],
+          "query": "engagement_ratio:>0",
+          "refId": "A",
+          "bucketAggs": [{ "type": "date_histogram", "id": "2", "field": "indexed_at", "settings": { "interval": "1d", "min_doc_count": "0" } }]
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "left",
+            "cellOptions": { "type": "auto" },
+            "inspect": false,
+            "lineHeight": 1
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#1e293b", "value": null },
+              { "color": "#92400e", "value": 0.3 },
+              { "color": "#7f1d1d", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Max drop_ratio" },
+            "properties": [
+              { "id": "displayName", "value": "Drop ratio" },
+              { "id": "unit", "value": "percentunit" },
+              { "id": "decimals", "value": 2 },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              { "id": "custom.width", "value": 150 },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [ { "color": "#166534", "value": null }, { "color": "#92400e", "value": 0.3 }, { "color": "#7f1d1d", "value": 0.5 } ] } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Max Score" },
+            "properties": [
+              { "id": "displayName", "value": "Score" },
+              { "id": "decimals", "value": 2 },
+              { "id": "custom.width", "value": 90 },
+              { "id": "custom.cellOptions", "value": { "type": "auto" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Max Members" },
+            "properties": [
+              { "id": "displayName", "value": "Membres" },
+              { "id": "unit", "value": "short" },
+              { "id": "custom.width", "value": 110 },
+              { "id": "custom.cellOptions", "value": { "type": "auto" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Max engagement_ratio" },
+            "properties": [
+              { "id": "displayName", "value": "Engagement" },
+              { "id": "unit", "value": "percentunit" },
+              { "id": "decimals", "value": 3 },
+              { "id": "custom.width", "value": 110 },
+              { "id": "custom.cellOptions", "value": { "type": "auto" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Name.keyword" },
+            "properties": [
+              { "id": "displayName", "value": "Anime" },
+              { "id": "custom.cellOptions", "value": { "type": "auto" } }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 8 },
+      "id": 6,
+      "options": {
+        "footer": { "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Drop ratio" }]
+      },
+      "title": "Animes suspects — drop ratio élevé avec audience significative",
+      "description": "drop_ratio > 20% et Members > 1000 — un score élevé combiné à un fort taux d'abandon signale une vraie anomalie",
+      "type": "table",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [
+            { "type": "max", "id": "1", "field": "drop_ratio" },
+            { "type": "max", "id": "2", "field": "Score" },
+            { "type": "max", "id": "3", "field": "Members" },
+            { "type": "max", "id": "4", "field": "engagement_ratio" }
+          ],
+          "bucketAggs": [{ "type": "terms", "id": "5", "field": "Name.keyword", "settings": { "size": "15", "order": "desc", "orderBy": "1" } }],
+          "query": "drop_ratio:>0.2 AND Members:>1000",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#3b82f6", "mode": "fixed" },
+          "unit": "percentunit",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#166534", "value": null },
+              { "color": "#92400e", "value": 0.15 },
+              { "color": "#7f1d1d", "value": 0.25 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 20 },
+      "id": 7,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["last"], "fields": "", "values": true },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "title": "Drop ratio moyen par type",
+      "description": "Taux d'abandon moyen par format — identifie les types les plus à risque",
+      "type": "bargauge",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [{ "type": "avg", "id": "1", "field": "drop_ratio" }],
+          "bucketAggs": [{ "type": "terms", "id": "2", "field": "Type", "settings": { "size": "10", "order": "desc", "orderBy": "1" } }],
+          "query": "*",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "fixedColor": "#3b82f6", "mode": "fixed" },
+          "unit": "short",
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#1e3a5f", "value": null },
+              { "color": "#1d4ed8", "value": 6 },
+              { "color": "#1e40af", "value": 7 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 20 },
+      "id": 8,
+      "options": {
+        "displayMode": "gradient",
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "orientation": "horizontal",
+        "reduceOptions": { "calcs": ["last"], "fields": "", "values": true },
+        "showUnfilled": true,
+        "valueMode": "color"
+      },
+      "title": "Score bayésien moyen par studio tier",
+      "description": "Weighted score moyen par tier — top studios produisent-ils de meilleurs animes ?",
+      "type": "bargauge",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [{ "type": "avg", "id": "1", "field": "weighted_score" }],
+          "bucketAggs": [{ "type": "terms", "id": "2", "field": "studio_tier", "settings": { "size": "5", "order": "desc", "orderBy": "1" } }],
+          "query": "weighted_score:*",
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "datasource": { "type": "elasticsearch", "uid": "elasticsearch-anime" },
+      "fieldConfig": {
+        "defaults": {
+          "color": { "mode": "thresholds" },
+          "custom": {
+            "align": "left",
+            "cellOptions": { "type": "auto" },
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "#1e293b", "value": null },
+              { "color": "#92400e", "value": 0.3 },
+              { "color": "#7f1d1d", "value": 0.5 }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "Max drop_ratio" },
+            "properties": [
+              { "id": "displayName", "value": "Drop ratio" },
+              { "id": "unit", "value": "percentunit" },
+              { "id": "decimals", "value": 2 },
+              { "id": "custom.cellOptions", "value": { "type": "color-background", "mode": "gradient" } },
+              { "id": "custom.width", "value": 150 },
+              { "id": "thresholds", "value": { "mode": "absolute", "steps": [ { "color": "#166534", "value": null }, { "color": "#92400e", "value": 0.3 }, { "color": "#7f1d1d", "value": 0.5 } ] } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Max Score" },
+            "properties": [
+              { "id": "displayName", "value": "Score" },
+              { "id": "decimals", "value": 2 },
+              { "id": "custom.width", "value": 90 },
+              { "id": "custom.cellOptions", "value": { "type": "auto" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Max Members" },
+            "properties": [
+              { "id": "displayName", "value": "Membres" },
+              { "id": "unit", "value": "short" },
+              { "id": "custom.width", "value": 110 },
+              { "id": "custom.cellOptions", "value": { "type": "auto" } }
+            ]
+          },
+          {
+            "matcher": { "id": "byName", "options": "Name.keyword" },
+            "properties": [
+              { "id": "displayName", "value": "Anime" },
+              { "id": "custom.cellOptions", "value": { "type": "auto" } }
+            ]
+          }
+        ]
+      },
+      "gridPos": { "h": 12, "w": 24, "x": 0, "y": 29 },
+      "id": 10,
+      "options": {
+        "footer": { "show": false },
+        "showHeader": true,
+        "sortBy": [{ "desc": true, "displayName": "Drop ratio" }]
+      },
+      "title": "Vue exhaustive — Top 50 animes à surveiller",
+      "description": "drop_ratio > 15% et Members > 1000 — référentiel complet pour la soutenance",
+      "type": "table",
+      "targets": [
+        {
+          "datasource": { "type": "elasticsearch" },
+          "metrics": [
+            { "type": "max", "id": "1", "field": "drop_ratio" },
+            { "type": "max", "id": "2", "field": "Score" },
+            { "type": "max", "id": "3", "field": "Members" }
+          ],
+          "bucketAggs": [{ "type": "terms", "id": "4", "field": "Name.keyword", "settings": { "size": "50", "order": "desc", "orderBy": "1" } }],
+          "query": "drop_ratio:>0.15 AND Members:>1000",
+          "refId": "A"
+        }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["anidata", "anomalies", "qualite"],
+  "templating": { "list": [] },
+  "time": { "from": "now-5y", "to": "now" },
+  "title": "AniData Lab — Détection d'anomalies",
+  "uid": "anidata-anomalies",
+  "style": "dark"
+}
