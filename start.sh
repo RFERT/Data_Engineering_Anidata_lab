@@ -6,6 +6,7 @@
 
 set -e
 
+
 BOLD='\033[1m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
