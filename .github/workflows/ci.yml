@@ -95,3 +95,33 @@ jobs:
           name: coverage-report
           path: coverage.xml
           retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # JOB 3 : BUILD DOCKER
+  # Construit l'image Docker du pipeline et la teste
+  # S'exécute après les tests si tout passe.
+  # ---------------------------------------------------------------------------
+  build_docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: tests
+    if: success()
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+
+      - name: Build de l'image Docker
+        run: docker build -f Dockerfile.pipeline -t anidata-lab:${{ github.sha }} -t anidata-lab:latest .
+
+      - name: Test rapide de l'image
+        run: docker run --rm anidata-lab:latest python -c "from airflow.models import DagBag; print('✓ Image OK')"
+
+      - name: Sauvegarde de l'image Docker (artefact)
+        run: docker save anidata-lab:latest | gzip > /tmp/anidata-lab.tar.gz
+
+      - name: Upload de l'image (artefact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-image
+          path: /tmp/anidata-lab.tar.gz
+          retention-days: 7

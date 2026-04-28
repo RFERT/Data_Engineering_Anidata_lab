@@ -1,0 +1,38 @@
+# =============================================================================
+# Docker Image — Data Engineering 101 : AniData Lab ETL Pipeline
+# =============================================================================
+# Image Airflow custom avec les scripts ETL et les DAGs pour le pipeline complet
+# Extract → Transform → Load → Anomaly Detection
+#
+# À utiliser avec docker-compose.yml pour orchestrer l'ensemble du stack
+# =============================================================================
+
+FROM apache/airflow:2.10.4-python3.10
+
+LABEL org.opencontainers.image.title="Data Engineering 101 - AniData Lab"
+LABEL org.opencontainers.image.description="Airflow + ETL scripts for anime data pipeline"
+
+USER airflow
+
+# --- Dépendances Python -------------------------------------------------------
+# Copier et installer les dépendances en premier pour profiter du cache Docker
+COPY --chown=airflow:root requirements-dev.txt /tmp/requirements-dev.txt
+RUN pip install --no-cache-dir -r /tmp/requirements-dev.txt
+
+# --- Scripts ETL --------------------------------------------------------------
+# Copier les scripts de transformation dans le conteneur
+COPY --chown=airflow:root airflow/scripts/ /opt/airflow/scripts/
+
+# --- DAGs Airflow -------------------------------------------------------------
+# Copier les définitions des DAGs
+COPY --chown=airflow:root airflow/dags/ /opt/airflow/dags/
+
+# --- Dossier de données -------------------------------------------------------
+# Créer le répertoire de travail pour les fichiers intermédiaires
+RUN mkdir -p /opt/airflow/data
+
+# --- Santé check --------------------------------------------------------------
+# Vérifier que les imports de base fonctionnent
+RUN python -c "from airflow.models import DagBag; print('Airflow DagBag import OK')"
+
+WORKDIR /opt/airflow
