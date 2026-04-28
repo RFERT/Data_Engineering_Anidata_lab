@@ -4,7 +4,6 @@
 # Stack: Elasticsearch + Grafana + Airflow
 # ============================================
 
-
 set -e
 
 BOLD='\033[1m'
