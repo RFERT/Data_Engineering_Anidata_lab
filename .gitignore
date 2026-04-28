@@ -1,5 +1,6 @@
 .env
 docker-compose.yml
+*.code-workspace
 # Données (trop volumineuses pour Git)
 data/*.csv
 data/*.zip
